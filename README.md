@@ -18,10 +18,10 @@
 1. [Executive Summary](#executive-summary)
 2. [Project Overview](#project-overview)
 3. [Technical Architecture](#technical-architecture)
-4. [Data Pipeline - dbt Models](#data-pipeline)
-5. [Dashboard - Looker Studio](#dashboard)
-6. [Key Insights & Findings](#key-insights)
-7. [Challenges & Solutions](#challenges-solutions)
+4. [Data Pipeline - dbt Models](#data-pipeline---dbt-models)
+5. [Dashboard - Looker Studio](#dashboard---looker-studio)
+6. [Key Insights & Findings](#key-insights--findings)
+7. [Challenges & Solutions](#challenges--solutions)
 8. [Skills Demonstrated](#skills-demonstrated)
 9. [Future Enhancements](#future-enhancements)
 
@@ -863,8 +863,8 @@ marketing_analytics/
 
 ### Dashboard
 - **Live Link:** [Looker Studio Dashboard](https://lookerstudio.google.com/reporting/44122dc0-1edf-45ee-83a1-48949818b90a)
-- **PDF Export:** [`Marketing_Campaign_Analysis_Final.pdf`](outputs/Marketing_Campaign_Analysis.pdf)
-- **Screenshots:** [Screenshots](outputs/screenshots)
+- **PDF Export:** [Marketing_Campaign_Analysis.pdf](outputs/Marketing_Campaign_Analysis.pdf)
+- **Screenshots:** [outputs/screenshots](outputs/screenshots)
 
 ---
 
