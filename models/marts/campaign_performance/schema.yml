@@ -1,0 +1,176 @@
+version: 2
+
+models:
+  - name: mart_campaign_performance
+    description: >
+      Final mart table for campaign performance analysis including ROAS, CAC, 
+      and engagement metrics aggregated by traffic source, medium, campaign, and device.
+    columns:
+      - name: traffic_source
+        description: "Traffic source (e.g., google, direct, facebook)"
+        tests:
+          - not_null
+          
+      - name: traffic_medium
+        description: "Traffic medium (e.g., organic, cpc, referral)"
+        tests:
+          - not_null
+          
+      - name: campaign_name
+        description: "Campaign name (can be null for non-campaign traffic)"
+        
+      - name: campaign_identifier
+        description: "Unique campaign identifier"
+        
+      - name: channel_grouping
+        description: "High-level channel classification"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Organic Search', 'Paid Search', 'Direct', 'Referral', 'Social', 'Email', 'Display', 'Other']
+              
+      - name: device_category
+        description: "Device type: desktop, mobile, or tablet"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['desktop', 'mobile', 'tablet']
+              
+      - name: total_sessions
+        description: "Total number of sessions"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+              
+      - name: total_unique_visitors
+        description: "Count of unique visitors"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+              
+      - name: total_pageviews
+        description: "Total pageviews across all sessions"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: total_bounces
+        description: "Total number of bounced sessions"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: total_conversions
+        description: "Total number of conversions"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: total_revenue
+        description: "Total revenue in USD"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: revenue_per_session
+        description: "Average revenue per session"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: revenue_per_conversion
+        description: "Average revenue per conversion (can be null if no conversions)"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              where: "total_conversions > 0"
+              
+      - name: sessions_per_visitor
+        description: "Average sessions per unique visitor"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+              
+      - name: conversion_rate_pct
+        description: "Percentage of sessions that converted (0-100)"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 100
+              
+      - name: bounce_rate_pct
+        description: "Percentage of single-page sessions (0-100)"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 100
+              
+      - name: avg_time_on_site_sec
+        description: "Average time on site in seconds"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: avg_pageviews_per_session
+        description: "Average pageviews per session"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: engagement_quality_score
+        description: "Composite engagement score (0-100)"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 100
+              
+      - name: estimated_cost
+        description: "Estimated campaign cost (placeholder calculation)"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: roas
+        description: "Return on Ad Spend (revenue/cost, can be null if cost is 0)"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              where: "estimated_cost > 0"
+              
+      - name: cac
+        description: "Customer Acquisition Cost (cost/conversions, can be null if no conversions)"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              where: "total_conversions > 0"
+
+    tests:
+      # Custom test: revenue should be non-negative
+      - dbt_utils.expression_is_true:
+          expression: "total_revenue >= 0"
+          
+      # Custom test: conversions should not exceed sessions
+      - dbt_utils.expression_is_true:
+          expression: "total_conversions <= total_sessions"
+          
+      # Custom test: unique visitors should not exceed sessions
+      - dbt_utils.expression_is_true:
+          expression: "total_unique_visitors <= total_sessions"
+          
+      # Custom test: bounces should not exceed sessions
+      - dbt_utils.expression_is_true:
+          expression: "total_bounces <= total_sessions"

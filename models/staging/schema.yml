@@ -1,0 +1,145 @@
+version: 2
+
+models:
+  - name: stg_ga_sessions
+    description: >
+      Staging model for Google Analytics sessions data from the public dataset.
+      Contains cleaned and renamed session-level data including traffic source,
+      device info, geography, and transaction metrics.
+      
+      Date range: July 2017 (20170701-20170731)
+      Grain: One row per session
+    
+    columns:
+      - name: session_id
+        description: Unique identifier combining visitor_id and visit_id
+        tests:
+          - unique
+          - not_null
+      
+      - name: visitor_id
+        description: Google Analytics visitor ID (fullVisitorId)
+        tests:
+          - not_null
+      
+      - name: visit_id
+        description: Visit ID for this session
+        tests:
+          - not_null
+      
+      - name: session_date
+        description: Date of the session (YYYY-MM-DD)
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              config: {}
+              min_value: "'2017-07-01'"
+              max_value: "'2017-07-31'"
+              inclusive: true
+      
+      - name: session_start_timestamp
+        description: Timestamp when the session started
+        tests:
+          - not_null
+      
+      - name: traffic_source
+        description: Source of traffic (e.g., google, direct, youtube)
+        tests:
+          - not_null
+      
+      - name: traffic_medium
+        description: Medium of traffic (e.g., organic, referral, cpc)
+        tests:
+          - not_null
+      
+      - name: campaign_name
+        description: Marketing campaign name (can be null for non-campaign traffic)
+      
+      - name: keyword
+        description: Search keyword (can be null)
+      
+      - name: ad_content
+        description: Ad content identifier (can be null)
+      
+      - name: visits
+        description: Number of visits (typically 1)
+        tests:
+          - not_null
+      
+      - name: hits
+        description: Number of hits in the session
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              config: {}
+              min_value: 0
+              inclusive: true
+      
+      - name: pageviews
+        description: Number of pageviews in the session
+      
+      - name: time_on_site_seconds
+        description: Time spent on site in seconds
+        tests:
+          - dbt_utils.accepted_range:
+              config: {}
+              min_value: 0
+              inclusive: true
+      
+      - name: bounces
+        description: Bounce indicator (1 if bounced, null otherwise)
+      
+      - name: transactions
+        description: Number of transactions in the session
+      
+      - name: transaction_revenue_micros
+        description: Transaction revenue in micros (divide by 1,000,000 for USD)
+      
+      - name: browser
+        description: Browser used
+        tests:
+          - not_null
+      
+      - name: device_category
+        description: Device category (desktop, mobile, tablet)
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['desktop', 'mobile', 'tablet']
+      
+      - name: operating_system
+        description: Operating system
+        tests:
+          - not_null
+      
+      - name: country
+        description: Country of the user
+        tests:
+          - not_null
+      
+      - name: city
+        description: City of the user
+      
+      - name: is_bounced
+        description: Binary indicator if session bounced (1) or not (0)
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1]
+              quote: false
+      
+      - name: is_converted
+        description: Binary indicator if session had a transaction (1) or not (0)
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1]
+              quote: false
+      
+      - name: revenue_usd
+        description: Transaction revenue in USD (converted from micros)
+        tests:
+          - dbt_utils.accepted_range:
+              config: {}
+              min_value: 0
+              inclusive: true

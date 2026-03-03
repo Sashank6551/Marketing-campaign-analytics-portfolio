@@ -1,0 +1,245 @@
+version: 2
+
+models:
+  - name: mart_conversion_funnel
+    description: >
+      Conversion funnel analysis showing progression through 4 stages. 
+      All rates are stored as decimals (0-1) not percentages.
+    columns:
+      - name: traffic_source
+        tests:
+          - not_null
+          
+      - name: traffic_medium
+        tests:
+          - not_null
+          
+      - name: campaign_name
+      - name: campaign_identifier
+        
+      - name: channel_grouping
+        tests:
+          - not_null
+          
+      - name: device_category
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['desktop', 'mobile', 'tablet']
+              
+      - name: country
+        tests:
+          - not_null
+          
+      # FUNNEL COUNTS
+      - name: sessions_landing
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+              
+      - name: sessions_engagement
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: sessions_deep_engagement
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: sessions_conversion
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: visitors_landing
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+              
+      - name: visitors_converted
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      # RATES (all 0-1 decimals, not percentages)
+      - name: landing_to_engagement_rate
+        description: "Decimal 0-1, e.g. 0.45 = 45%"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1
+              where: "sessions_landing > 0"
+              
+      - name: engagement_to_deep_rate
+        description: "Decimal 0-1, e.g. 0.45 = 45%"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1
+              where: "sessions_engagement > 0"
+              
+      - name: deep_to_conversion_rate
+        description: "Decimal 0-1, e.g. 0.45 = 45%"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1
+              where: "sessions_deep_engagement > 0"
+              
+      - name: overall_conversion_rate
+        description: "Decimal 0-1, e.g. 0.007 = 0.7%"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1
+              where: "sessions_landing > 0"
+              
+      - name: visitor_conversion_rate
+        description: "Decimal 0-1, visitor-level conversion"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1
+              where: "visitors_landing > 0"
+              
+      # DROPOFF RATES (all 0-1 decimals)
+      - name: dropoff_after_landing_pct
+        description: "Decimal 0-1, not percentage"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1
+              where: "sessions_landing > 0"
+              
+      - name: dropoff_after_engagement_pct
+        description: "Decimal 0-1, not percentage"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1
+              where: "sessions_engagement > 0"
+              
+      - name: dropoff_after_deep_pct
+        description: "Decimal 0-1, not percentage"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1
+              where: "sessions_deep_engagement > 0"
+              
+      - name: primary_dropoff_stage
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Landing', 'Engagement', 'Deep Engagement', 'Multiple']
+              
+      # EXIT COUNTS
+      - name: exits_at_landing
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: exits_after_landing
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: exits_at_engagement
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: exits_at_deep_engagement
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: exits_converted
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      # ENGAGEMENT SCORES
+      - name: avg_engagement_score
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 100
+              where: "sessions_landing > 0"
+              
+      - name: avg_visitor_engagement_score
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 100
+              
+      - name: avg_visitor_days_active
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      # REVENUE METRICS
+      - name: total_revenue
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: revenue_per_visitor_conversion
+        description: "Revenue per converted visitor (can be NULL)"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              where: "visitors_converted > 0"
+              
+      - name: revenue_per_conversion
+        description: "Revenue per conversion session (can be NULL)"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              where: "sessions_conversion > 0"
+              
+      - name: revenue_per_landing
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: funnel_health_score
+        description: "Composite score 0-100"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 100
+              where: "sessions_landing > 0"
+
+    tests:
+      # Funnel logic tests
+      - dbt_utils.expression_is_true:
+          expression: "sessions_landing >= sessions_engagement"
+          
+      - dbt_utils.expression_is_true:
+          expression: "sessions_engagement >= sessions_deep_engagement"
+          
+      - dbt_utils.expression_is_true:
+          expression: "sessions_deep_engagement >= sessions_conversion"
+          
+      # Overall conversion rate check (allow small rounding errors)
+      - dbt_utils.expression_is_true:
+          expression: "ABS(overall_conversion_rate - (sessions_conversion / NULLIF(sessions_landing, 0))) < 0.001"
+          config:
+            severity: warn

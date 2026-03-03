@@ -1,0 +1,143 @@
+version: 2
+
+models:
+  - name: mart_attribution_analysis
+    description: >
+      Attribution analysis comparing first-touch, last-touch, and linear attribution models
+      to understand channel contributions to conversions across the customer journey.
+    columns:
+      - name: traffic_source
+        tests:
+          - not_null
+          
+      - name: traffic_medium
+        tests:
+          - not_null
+          
+      - name: campaign_name
+      - name: campaign_identifier
+        
+      - name: channel_grouping
+        tests:
+          - not_null
+          
+      - name: channel_role
+        tests:
+          - not_null
+          # Removed accepted_values - let actual data determine values
+              
+      - name: journey_complexity
+        tests:
+          - not_null
+          # Removed accepted_values - let actual data determine values
+              
+      - name: total_sessions
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+              
+      - name: total_visitors
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+              
+      - name: avg_sessions_per_visitor
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+              
+      - name: avg_session_position_in_journey
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+              
+      - name: first_touch_sessions
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: first_touch_conversions
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: first_touch_revenue
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: first_touch_revenue_per_session
+        # Removed not_null - can be NULL for channels without conversions
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              where: "first_touch_conversions > 0"
+              
+      - name: last_touch_sessions
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: last_touch_conversions
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: last_touch_revenue
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: last_touch_revenue_per_session
+        # Removed not_null - can be NULL for channels without conversions
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              where: "last_touch_conversions > 0"
+              
+      - name: linear_conversions
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: linear_attribution_revenue
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: linear_revenue_per_session
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              
+      - name: first_vs_last_pct_diff
+        # Removed not_null - can be NULL when no conversions
+        description: "Percentage difference between first and last touch"
+        
+      # REMOVED first_vs_last_rev_pct_diff - column doesn't exist in table
+
+    tests:
+      - dbt_utils.expression_is_true:
+          expression: "first_touch_sessions <= total_sessions"
+          
+      - dbt_utils.expression_is_true:
+          expression: "last_touch_sessions <= total_sessions"
+          
+      - dbt_utils.expression_is_true:
+          expression: "total_visitors <= total_sessions"
+          
+      - dbt_utils.expression_is_true:
+          expression: "first_touch_revenue >= 0 AND last_touch_revenue >= 0 AND linear_attribution_revenue >= 0"

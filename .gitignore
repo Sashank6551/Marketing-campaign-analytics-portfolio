@@ -1,0 +1,140 @@
+# ==============================================
+# CREDENTIALS (CRITICAL - NEVER COMMIT)
+# ==============================================
+*.json
+portfolio-ecommerce-*.json
+*.key
+*.pem
+credentials.yml
+.secrets
+
+# ==============================================
+# dbt ARTIFACTS (Do NOT commit)
+# ==============================================
+target/
+dbt_packages/
+logs/
+dbt_modules/
+.user.yml
+
+# ==============================================
+# PYTHON VIRTUAL ENVIRONMENT
+# ==============================================
+venv/
+env/
+.venv/
+Lib/
+Scripts/
+share/
+pyvenv.cfg
+Include/
+*.cfg
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ==============================================
+# DATA FILES (Large files should not be in repo)
+# ==============================================
+*.csv
+*.parquet
+*.xlsx
+*.xls
+data/
+datasets/
+*.db
+*.sqlite
+
+# ==============================================
+# VISUALIZATIONS OUTPUT
+# ==============================================
+*.html
+viz_*.html
+plots/
+charts/
+
+# ==============================================
+# OS GENERATED FILES
+# ==============================================
+# Windows
+Thumbs.db
+eDesktop.ini
+$RECYCLE.BIN/
+*.lnk
+*.stackdump
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Linux
+*~
+.directory
+
+# ==============================================
+# IDE / EDITOR
+# ==============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*~
+.project
+.classpath
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# ==============================================
+# COMPILED FILES
+# ==============================================
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# ==============================================
+# LOGS & TEMPORARY FILES
+# ==============================================
+*.log
+*.tmp
+*.temp
+*.cache
+.cache/
+
+# ==============================================
+# JUPYTER NOTEBOOKS
+# ==============================================
+.ipynb_checkpoints/
+*.ipynb
+
+# ==============================================
+# DOCUMENTATION BUILD
+# ==============================================
+docs/_build/
+site/
