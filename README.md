@@ -24,6 +24,7 @@
 7. [Challenges & Solutions](#challenges--solutions)
 8. [Skills Demonstrated](#skills-demonstrated)
 9. [Future Enhancements](#future-enhancements)
+10. [Metrics Definitions Reference](#metrics-definitions-reference)
 
 ---
 
@@ -181,6 +182,8 @@ linear_attribution_revenue = revenue_usd * linear_weight
 - ROAS = Revenue / Estimated Cost
 - CAC = Cost / Conversions
 - Engagement quality score (0-100)
+
+> For detailed metric definitions, formulas, and benchmarks, see [Marketing Metrics Definitions](documentation/marketing_metrics_definitions.md)
 
 **Business Logic:**
 ```sql
@@ -865,6 +868,28 @@ marketing_analytics/
 - **Live Link:** [Looker Studio Dashboard](https://lookerstudio.google.com/reporting/44122dc0-1edf-45ee-83a1-48949818b90a)
 - **PDF Export:** [Marketing_Campaign_Analysis.pdf](outputs/Marketing_Campaign_Analysis.pdf)
 - **Screenshots:** [outputs/screenshots](outputs/screenshots)
+- **Metrics Reference:** [Marketing Metrics Definitions](documentation/marketing_metrics_definitions.md)
+
+---
+
+## Metrics Definitions Reference
+
+For detailed explanations of all metrics used in this project, including:
+- Traffic metrics (sessions, visitors, bounce rate)
+- Engagement metrics (pages per session, time on site, engagement score)
+- Conversion metrics (conversion rate, goal completion)
+- Revenue metrics (ROAS, CAC, revenue per session)
+- Attribution metrics (first-touch, last-touch, linear, channel roles)
+- Funnel metrics (stage progression, drop-off rates, funnel health)
+
+See the comprehensive guide: [Marketing Metrics Definitions](documentation/marketing_metrics_definitions.md)
+
+This reference document includes:
+- Calculation formulas for each metric
+- Industry benchmarks and typical ranges
+- Use cases and interpretation guidelines
+- Dashboard visualization recommendations
+- Important caveats and data limitations
 
 ---
 
